@@ -1,0 +1,138 @@
+﻿@page "/"
+
+@using Microsoft.AspNetCore.Hosting
+@using System.IO
+@using System.Security.Policy
+
+@using MikeCodesDotNET.Services
+@using MikeCodesDotNET.Utilities
+@using MikeCodesDotNET.Models
+@using MikeCodesDotNET.Services.Blog
+
+
+@inject IBlogService blogService
+
+<PageTitle>Mike Codes .NET</PageTitle>
+
+  <style>
+        .searchTextBox {
+            width: 98%;
+            text-align: center !important;
+            margin-bottom: 0.75rem;
+        }
+</style>
+
+@if (allPosts == null || !allPosts.Any())
+{
+    <p>Loading...</p>
+}
+else 
+{
+<Animate Animation="Animations.FadeUp" Duration="TimeSpan.FromMilliseconds(300)" Delay="TimeSpan.FromMilliseconds(100)">
+    <div class="mt-5 container">
+        <section class="firstSection">
+            <div class="row justify-content-between">
+                <h1 class="pageTitle">Posts</h1>
+                <button class="btn btn-primary-2 mt-2 mb-2 mx-2" @onclick="SearchClicked">
+                    <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="injected-svg icon" data-src="img/icons/theme/general/search.svg">
+                            <title>Icon For Search</title>
+                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                <rect opacity="0" x="0" y="0" width="24" height="24"></rect>
+                                <path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
+                                <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero"></path>
+                            </g>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+
+                @if (searchIsVisible)
+                {
+                    <Animate Animation="Animations.FadeIn" Duration="TimeSpan.FromMilliseconds(300)" Delay="TimeSpan.FromMilliseconds(100)">
+                         <div class="row justify-content-center">        
+                            <div class="input-group input-group-lg mb-3 mx-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1" class="injected-svg icon" data-src="img/icons/theme/general/search.svg">
+                                            <title>Icon For Search</title>
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <rect opacity="0" x="0" y="0" width="24" height="24"></rect>
+                                                <path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"></path>
+                                                <path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero"></path>
+                                            </g>
+                                        </svg>
+                                    </span>
+                                </div>
+                            <input type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon-1" @oninput="@OnChange">
+                            </div>
+                        </div>
+                        </Animate>
+                    
+                }
+
+            @if (filteredPosts.Any())
+            {
+                <section class="firstSection">
+                    <div class="row mb-4 mt-0" data-isotope-collection data-sort-ascending="true">
+
+                        @foreach (var post in filteredPosts)
+                        {
+                            <BlogPostCard BlogPost="@post"></BlogPostCard>
+                        }
+
+                    </div>
+                    </section>
+                }
+                else
+                {
+                     <section class="firstSection">
+                        <p>No Results Found.</p>
+                    </section>
+                }
+            </section>
+    </div>
+</Animate>
+}
+
+@code{
+
+    private string searchTerm;
+    private IList<BlogPost> filteredPosts;
+    private IList<BlogPost> allPosts;
+
+    private const string BlogRelativePath = "blog";
+    private bool searchIsVisible = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        allPosts = await blogService.GetPosts();
+        filteredPosts = allPosts;
+    }
+
+    /// <summary>
+    /// Toggles the search textbox visibility 
+    /// </summary>
+    private void SearchClicked()
+    {
+        searchIsVisible = !searchIsVisible;
+    }
+
+    /// <summary>
+    /// Handle the search term changing 
+    /// </summary>
+    /// <param name="args"></param>
+    private void OnChange(Microsoft.AspNetCore.Components.ChangeEventArgs args)
+    {
+        searchTerm = (string)args.Value;
+
+        if(string.IsNullOrEmpty(searchTerm))
+        {
+            filteredPosts = allPosts;
+        }
+        else
+        {
+            
+        }
+    }
+}

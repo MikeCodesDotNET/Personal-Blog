@@ -1,0 +1,53 @@
+﻿@namespace MikeCodesDotNET.Components
+
+
+<div class="sideTabContainer">
+    <div class="sideTabNavigation">
+        <div class="list-group mb-3 bg-admin">
+                
+            @foreach (TabPage tabPage in Pages)
+            {
+                <a class="list-group-item list-group-item-action bg-admin @GetButtonClass(tabPage)" @onclick=@( () => ActivatePage(tabPage) )>
+                    @tabPage.Text                    
+                </a>
+            }
+                
+        </div>
+    </div>
+
+    <div class="sideTabContent">
+            <CascadingValue Value="this">
+                @ChildContent
+            </CascadingValue>
+    </div>
+</div>
+
+
+
+
+@code {
+    // Next line is needed so we are able to add <TabPage> components inside
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+    public TabPage ActivePage { get; set; }
+    List<TabPage> Pages = new List<TabPage>();
+
+    internal void AddPage(TabPage tabPage)
+    {
+        Pages.Add(tabPage);
+        if (Pages.Count == 1)
+            ActivePage = tabPage;
+        StateHasChanged();
+    }
+
+    string GetButtonClass(TabPage page)
+    {
+      return page == ActivePage ? "active" : "";
+    }
+
+    void ActivatePage(TabPage page)
+    {
+      ActivePage = page;
+    }
+}

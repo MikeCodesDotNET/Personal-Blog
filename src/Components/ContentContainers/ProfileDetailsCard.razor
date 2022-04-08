@@ -1,0 +1,63 @@
+﻿@namespace MikeCodesDotNET.Components
+
+    <div class="card mb-3 bg-admin text-light">
+        <div class="card-header">
+            <div class="float-right">
+                <button class="btn btn-sm btn-link p-0 ml-3" data-modal="profiles/_password">
+                    Change password
+                </button>
+
+                <a class="btn btn-sm btn-link p-0 ml-3" href="/account/profile-settings">
+                    Edit profile
+                </a>
+            </div>
+
+            <h5>Profile details</h5>
+        </div>
+
+        <div class="card-body profileDetailsContent">
+
+            <div class="profileDetailsLeftContent">
+
+                    <div class="avatar-settings float-left mr-3 text-center" style="display: inline-flex;">
+                        <img src="@Picture" height="72" width="72" class="rounded-circle d-block">
+                    </div>
+
+                    <ul class="list-unstyled profileDetailsUserName" style="display: flex;">
+                        <li>
+                            <strong>@Username</strong>
+                        </li>
+                        <li class="text-muted">@Email</li>
+                    </ul>                
+            </div>
+            <div class="profileDetailsConnectButons">
+                <div class="text-md-right">
+        
+                        <button type="button" class="btn btn-light btn-block btn-sm" title="" data-toggle="tooltip" data-action="connect-facebook" data-original-title="Iconfinder will access your name and contact details from your Facebook account.">
+                            Connect to Github
+                        </button>
+
+        
+                        <form action="/user/ajax/social/google/connect" method="post" class="pt-2">
+                            <input type="hidden" name="csrfmiddlewaretoken" value="MQjVYXNqSPXJxv2ZIuCEOnh56s95EY28">
+                            <button type="submit" class="btn btn-light btn-block btn-sm">                                    
+                                Connect to Twitter
+                            </button>
+                        </form>
+        
+                </div>
+            </div>
+        </div>
+    </div>
+
+@code {
+        [Parameter]
+        public string Username { get; set; } = "Anonymous User";
+
+        [Parameter]
+        public string Picture { get; set; }
+
+        [Parameter]
+        public string Email { get; set; } = "Email address unknown";
+
+}

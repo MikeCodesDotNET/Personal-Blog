@@ -1,0 +1,21 @@
+﻿@namespace MikeCodesDotNET.Components
+
+@using MikeCodesDotNET.Models
+
+<style> 
+
+	.img-style { 
+		max-height: 50%;
+		max-width: 60%;
+	}
+
+</style>
+
+<img src="@Image.Url.ToString()" class=img-style img-fluid/>
+
+@code {
+
+	[Parameter]
+	public Image Image {get; set;}
+
+}

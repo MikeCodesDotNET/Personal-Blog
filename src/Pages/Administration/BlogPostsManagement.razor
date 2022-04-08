@@ -1,0 +1,194 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using MikeCodesDotNET.Data
+@using MikeCodesDotNET.Services
+@using MikeCodesDotNET.Utilities
+@using MikeCodesDotNET.Models
+
+@using MikeCodesDotNET.Services.Blog
+@using Newtonsoft.Json
+@using System.Threading
+@using Humanizer
+@using Humanizer.DateTimeHumanizeStrategy
+@using System.Diagnostics
+
+@inject AuthenticationStateProvider authState
+@inject IBlogService blogService
+@inject BlogPostStorageService blogPostImporter
+
+@attribute [Authorize]
+
+@if (isEditing == false)
+{
+    <SectionCard Title="Blog Posts"> 
+        <HeaderRight>
+            <button class="btn m-1 btn-sm btn-warning mr-1" @onclick="@(async () => await InvalidPosts())">Force Re-sync</button>
+            <button class="btn m-1 btn-sm btn-primary mr-1">New</button>            
+        </HeaderRight>
+        <ChildContent>            
+   
+            <div class="col-md-6 mb-1">
+                <div class="form-group">
+                    <input type="text" class="form-input" placeholder="Search" @bind-value="FilterInput" @bind-value:event="oninput" />
+                </div>
+            </div>
+
+          @*  <BlazorGrid QueryUserInput="@FilterInput" RowHighlighting="true" TRow="BlogPost" DefaultOrderBy="x => x.PublishedTimestamp" Provider="LoadData" OnClick="row => SelectPost(row)">               
+                <GridCol For="() => context.MarkdownContent.Title" Caption="Title" FitToContent="false"/>
+                <StaticGridCol FitToContent="true" Caption="Word Count" AlignRight="true">
+                    <span class="badge badge-pill badge-primary m-1">@context.MarkdownContent.WordCount()</span>
+                </StaticGridCol>             
+                <GridCol For="() => Humanizer.DateHumanizeExtensions.Humanize(context.PublishedTimestamp, null, null)" Caption="Published Date"  />
+            </BlazorGrid>*@
+
+           <table class="table table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Title</th>
+                        <th scope="col">Published Date</th>
+                        <th scope="col">Word Count</th>
+                        <th scope="col">Reading Time</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var post in blogPosts)
+                    {                        
+                        <tr class="text-light">
+                            <td class="bolded">@post.MarkdownContent.Title</td>
+                            <td class="table-dimmed">@Humanizer.DateHumanizeExtensions.Humanize(post.PublishedTimestamp, null, null)</td>
+                            <td class="table-dimmed">@post.MarkdownContent.WordCount().ToString("N0") words</td>
+                            <td class="table-dimmed">@post.MarkdownContent.ToReadingTime()</td>
+                            <button class="btn m-1 btn-sm btn-edit mr-1" @onclick="@(() => SelectPost(post))">Edit</button>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </ChildContent>
+    </SectionCard>
+}
+else
+{
+<SectionCard Title="Blog Post Editor"> 
+    <HeaderRight>
+        <button class="btn m-1 btn-sm btn-warning mr-1"  @onclick="Cancel">Cancel</button>
+        <button class="btn m-1 btn-sm btn-danger mr-1"  @onclick="Delete">Delete</button>
+        @if (isDirty == true)
+        {
+            <button class="btn m-1 btn-sm btn-primary mr-1" @onclick="Save">Save</button>
+            <button class="btn m-1 btn-sm btn-success" @onclick="Publish">Publish</button>
+        }
+	</HeaderRight>
+    <ChildContent>            
+   
+       <div class="container-fluid">
+            <div class="row">
+                <div class="col">                    
+                    <MarkdownEditor @bind-Value="@selectedPost.MarkdownContent.MarkdownText" 
+                                    UploadImage="true"
+                                    AutoDownloadFontAwesome="true"                                                                         
+                                    ValueHTMLChanged="@OnMarkdownValueHTMLChanged"/>   
+                </div>
+                <div class="col">
+                    @*@((MarkupString)@markdownHtml)*@
+                    @if(selectedPost != null)
+                    {
+                        <BlogPostContentControl @ref="contentControl" BlogPost="@selectedPost"></BlogPostContentControl>
+                    }
+                </div>
+            </div>
+        </div>
+
+    </ChildContent>
+</SectionCard>
+
+}
+
+
+
+
+
+@code {
+    private BlogPostContentControl contentControl;
+    private MarkdownEditor markdownEditor;
+
+    public string FilterInput { get; set; }
+
+    private bool isDirty;
+    private BlogPost selectedPost;
+    private bool isEditing;
+
+    private List<BlogPost> blogPosts;
+
+    string markdownValue = "#Markdown Editor\nThis is a test";
+    string markdownHtml;
+
+
+    Task OnMarkdownValueChanged(string value)
+    {
+        selectedPost.MarkdownContent.MarkdownText = value;
+        contentControl.Refresh();
+        return Task.CompletedTask;
+    }
+
+    Task OnMarkdownValueHTMLChanged(string value)
+    {
+        contentControl.Refresh();
+        isDirty = true;
+        return Task.CompletedTask;
+    }
+
+
+    private void Delete()
+    {
+        if (selectedPost == null)
+            return;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        markdownHtml = Markdig.Markdown.ToHtml(markdownValue ?? string.Empty);
+        blogPosts = await blogService.GetPosts();
+    }
+
+    private async void SelectPost(BlogPost row)
+    {
+        isEditing = true;
+        selectedPost = row;
+
+        markdownHtml = Markdig.Markdown.ToHtml(selectedPost.MarkdownContent.MarkdownText);
+    }
+
+    private async Task InvalidPosts()
+    {
+        var syncResult = await blogService.SyncDatabase();
+
+        if(syncResult.Success)
+        {
+            Debug.WriteLine("Synced database");
+        }
+        else
+        {
+            Debug.WriteLine("Failed to sync database");
+        }
+    }
+
+
+    private async Task Save()
+    {
+        await blogService.UpdatePost(selectedPost);
+        isDirty = false;
+    }
+
+    private void Publish()
+    {
+        isDirty = false;
+    }
+
+    public void Cancel()
+    {
+        isDirty = false;
+        selectedPost = null;
+        isEditing = false;
+    }
+}

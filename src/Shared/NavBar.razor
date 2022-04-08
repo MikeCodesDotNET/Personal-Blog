@@ -1,0 +1,54 @@
+﻿@namespace MikeCodesDotNET.Components
+
+<div class="navbar-container">
+    <nav class="navbar navbar-expand-lg justify-content-between navbar-dark bg-primary-4 border-bottom-0" data-sticky="top">
+        <div class="container">
+            <div class="col flex-fill px-0 d-flex justify-content-between">
+                <a class="navbar-brand" asp-area="/" href="/" asp-page="/Index">Mike Codes .NET</a>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+
+
+            <div class="collapse navbar-collapse col px-0 px-lg-2 justify-content-end col" id="navbarCollapse">
+                <div class="py-2 py-lg-0">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="/">
+                                Home
+                            </NavLink>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="/about">
+                                About Me
+                            </NavLink>
+                        </li>
+
+                        <AuthorizeView>
+                            <Authorized>
+                                
+                                <div class="dropdown">
+                                    <button class="btn btn-primary-3 dropdown-toggle" type="button" data-toggle="dropdown" data-hover="true" aria-haspopup="true" aria-expanded="false">
+                                        Account
+                                    </button>
+                                    <div class="dropdown-menu">
+                                          <NavLink class="dropdown-item" href="admin">Manage</NavLink>
+                                        <hr/>
+                                            <NavLink class="dropdown-item" href="logout">Log out</NavLink>
+                                    </div>
+                                </div>
+                            </Authorized>
+                        </AuthorizeView>
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+@code {
+
+}

@@ -1,0 +1,125 @@
+﻿@namespace MikeCodesDotNET.Components
+
+@using MikeCodesDotNET.Models
+@inject ImageService imageService 
+@inject IJSRuntime jsRuntime
+@inject NavigationManager navigationManager;
+@inject IAlertService alertService
+@inject IModalService modalService
+
+<style>
+    .my-menu { color: white;  background: #0b0d18; border-radius: 5px; border-color: rgba(255, 255, 255, 0.25); }
+    
+    /* using css specificity to override default background-color */
+    .my-menu .my-menu-item { background-color: #0b0d18;}
+    .my-menu .my-menu-item:hover { background-color: rgba(83,91,254, 0.7);} 
+
+    .my-menu-hr { height: 0px; background: rgba(83,91,254, 0.6); }
+</style>
+
+
+@if (Images != null)
+{
+    <ContextMenu Id="imageContextMenu" Template="myTemplate">
+        <Item Id="imgCtxView" OnClick="@OnContextClick">View</Item>
+        <Item Id="imgCtxCopyUrl" OnClick="@OnContextClick">Copy URL</Item>
+        <Item Id="imgCtxDownload" OnClick="@OnContextClick">Download</Item>
+        <Seperator />
+        <Item Id="imgCtxDelete" OnClick="@OnContextClick">Delete</Item>
+        <Item Id="imgCtxRename" OnClick="@OnContextClick">Rename</Item>
+        <Seperator />
+        <Item Id="imgCtxProperties" OnClick="@OnContextClick">Properties</Item>
+    </ContextMenu>
+
+
+    <section class="img-grid-section">
+        <div class="row mb-4" data-isotope-collection data-sort-ascending="true">
+
+            @foreach (var img in Images)
+            {
+                <ImageGridCard Image=img OnSelectionChanged="(e) => { ImageSelectionDidChange(e, img); }" ContextMenuId="imageContextMenu"/>
+            }
+        </div>
+    </section> 
+}
+
+
+@code {
+
+    [Parameter]
+    public IList<Image> Images { get; set; }
+
+    private Image _selectedImage;
+
+    private Image _contextImage;
+
+    private IList<Image> _selectedImages;
+
+    
+
+    protected override void OnInitialized()
+    {
+        _selectedImages = new List<Image>();
+        base.OnInitialized();
+    }
+
+    private void ImageUploaded(Image newImage)
+    {
+        Images.Add(newImage);
+    }
+
+    void ImageSelectionDidChange(bool isSelected, Image img)
+    {
+        if (isSelected && !_selectedImages.Contains(img))
+        {
+            _selectedImages.Add(img);
+        }
+        else if(!isSelected && _selectedImages.Contains(img))
+        {
+            _selectedImages.Remove(img);
+        }
+    }
+
+    async Task OnContextClick(ItemClickEventArgs e)
+    {
+        var imgUrl = e.ContextMenuTrigger.Id;
+        _contextImage = Images.FirstOrDefault(x => x.Url.ToString() == imgUrl);
+
+          switch (e.MenuItem.Id)
+          {        
+              case "imgCtxView":
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(ImageModalContentView.Image), _contextImage);     
+                
+                var options = new ModalOptions();
+                options.Class = "w-100 text-center";
+                modalService.Show<ImageModalContentView>(_contextImage.FileName, parameters);
+                break;
+
+             case "imgCtxDownload":
+                navigationManager.NavigateTo(_contextImage.Url.ToString());
+                break;
+
+              case "imgCtxCopyUrl":
+
+                  await jsRuntime.InvokeVoidAsync("clipboardCopy.copyText", _contextImage.Url);
+                  alertService.Info("Copied image URL to clipboard");
+                  break;
+
+              case "imgCtxDelete":
+                  alertService.Error("Not implemented");
+                  break;
+
+              case "imgCtxRename":
+                  alertService.Error("Not implemented");
+                  break;
+
+              case "imgCtxProperties":
+                  alertService.Error("Not implemented");
+                  break;
+          }
+
+        //Console.WriteLine($"Item Clicked => Menu: {e.ContextMenuId}, MenuTarget: {e.ContextMenuTargetId}, IsCanceled: {e.IsCanceled}, MenuItem: {e.MenuItemElement}, MouseEvent: {e.MouseEvent}");
+    }
+   
+}

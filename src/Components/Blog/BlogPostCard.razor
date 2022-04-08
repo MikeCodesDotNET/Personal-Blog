@@ -1,0 +1,77 @@
+﻿@namespace MikeCodesDotNET.Components
+
+@using MikeCodesDotNET.Models
+@using System.Diagnostics
+
+@if (BlogPost != null)
+{
+    if (BlogPost.MarkdownContent != null)
+    {
+        if (string.IsNullOrEmpty(BlogPost.MarkdownContent.HeaderBackgroundImage.Url.ToString()))
+        {
+            <div class="col-md-6 col-lg-4" data-isotope-item>
+                <a href="@BlogPost.PublishedUrl" class="card card-body mb-1 justify-content-between bg-primary text-light hover-shadow-3d">
+                    <div class="d-flex justify-content-end mb-3">
+                        <div class="text-small d-flex">
+                            <div class="mr-2">
+                                @BlogPost.MarkdownContent.Category.Name
+                            </div>
+                            <span class="badge bg-primary-alt text-primary">
+                                @BlogPost.MarkdownContent.ToReadingTime()
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>@BlogPost.MarkdownContent.Title</h2>
+                        <p class="text-small opacity-60">@BlogPost.MarkdownContent.Description</p>
+                    </div>
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-6 col-lg-4" data-isotope-item>
+                <div class="card bg-primary hover-shadow-3d">
+                    <a href="@BlogPost.PublishedUrl">
+                        <img src="@BlogPost.MarkdownContent.HeaderBackgroundImage.Url.ToString()" alt="Image" class="card-img-top">
+                    </a>
+                    <div class="card-body mb-1 bg-primary text-light d-flex flex-column">
+                        <div class="flex justify-content-between mb-3">
+                            <div class="text-small flex">
+                                <div class="mr-2" style="float: left">
+                                    @BlogPost.MarkdownContent.Category.Name
+                                </div>
+                                <span class="badge bg-primary-alt text-primary" style="float: right">
+                                    @BlogPost.MarkdownContent.ToReadingTime()
+                                </span>
+                            </div>
+                        </div>
+                        <a href="@BlogPost.PublishedUrl">
+                            <h4>@BlogPost.MarkdownContent.Title</h4>
+                        </a>
+                        <p class="flex-grow-1">
+                            @BlogPost.MarkdownContent.Description
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Cock it</p>
+    }
+}
+
+@code {
+
+    [Parameter]
+    public BlogPost BlogPost { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Debug.WriteLine(BlogPost.PublishedUrl);
+    }
+}

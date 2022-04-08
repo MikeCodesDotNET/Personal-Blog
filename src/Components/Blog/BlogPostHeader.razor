@@ -1,0 +1,73 @@
+﻿@namespace MikeCodesDotNET.Components
+
+@using MikeCodesDotNET.Pages
+@using MikeCodesDotNET.Models
+@using BlogPostContent = MikeCodesDotNET.Models.PostMdContent
+@using System.Diagnostics
+
+
+@if (BlogPost == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <section class="pt-0 pb-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-8">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        @if (BlogPost.MarkdownContent.Tags != null && BlogPost.MarkdownContent.Tags.Any())                         
+                        {                            
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    @foreach (var tag in @BlogPost.MarkdownContent.Tags)
+                                    {
+                                        <li class="breadcrumb-item">
+                                            <a href="#">@tag.Name</a>
+                                        </li>
+                                    }
+                                </ol>
+                            </nav>                                                    
+                        }
+
+                    </div>
+                    <h1 class="postTitle">@BlogPost.MarkdownContent.Title</h1>
+                    <div class="d-flex align-items-center">
+                        <a href="#">
+                            <img src="/img/mikejames_avatar_200x200.jpg" alt="Avatar" class="avatar mr-2">
+                        </a>
+                        <div>
+                            <div>
+                                by <a href="https://www.twitter.com/MikeCodesDotNET">Mike James</a>
+                            </div>
+                            @if(BlogPost.PublishedTimestamp.HasValue)
+                            {
+                                <div class="text-small text-muted">@BlogPost.PublishedTimestamp.Value.ToString("d")</div>
+                            }
+                            else
+                            {
+                               <div class="text-small text-muted">Not Published</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+
+@code {
+
+    [Parameter]
+    public BlogPost BlogPost { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Debug.WriteLine($"Loaded: {BlogPost.DirectoryName}");
+    }
+
+}

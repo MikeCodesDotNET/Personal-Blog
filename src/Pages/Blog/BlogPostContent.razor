@@ -1,0 +1,49 @@
+﻿@page "/blog/{PostName}"
+
+@using MikeCodesDotNET.Services.Blog
+@using Westwind.AspNetCore.Markdown;
+@using MikeCodesDotNET.Models
+@using MikeCodesDotNET.Utilities
+@using System.IO
+@using BlazorAnimate
+
+@inject IBlogService blogService
+
+<div class="mt-5 container ">
+    @if (BlogPost != null)
+    {
+        <PageTitle>Mike Codes .NET - @BlogPost.MarkdownContent.Title</PageTitle>
+
+        <section style="padding: 0rem;">
+            <Animate Animation="Animations.FadeUp" Duration="TimeSpan.FromSeconds(1)" Delay="TimeSpan.Zero">
+                <BlogPostHeader BlogPost="@BlogPost"></BlogPostHeader>
+            </Animate>
+
+            <Animate Animation="Animations.FadeUp" Duration="TimeSpan.FromSeconds(1)" Delay="TimeSpan.FromMilliseconds(500)">
+                <BlogPostContentControl BlogPost="@BlogPost"/>
+            </Animate>
+        </section>
+    }
+    else
+    {
+        <p>No Post Found</p>
+    }
+</div>
+
+@code
+{
+    [Parameter]
+    public Models.BlogPost BlogPost { get; set; }
+ 
+    [Parameter]
+    public string? PostName { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(PostName))
+        {
+            BlogPost = await blogService.GetPost(PostName);
+        }
+    }
+
+}

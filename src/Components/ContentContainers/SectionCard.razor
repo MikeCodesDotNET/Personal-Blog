@@ -1,0 +1,27 @@
+﻿@namespace MikeCodesDotNET.Components
+
+    <div class="card mb-3 bg-admin text-light">
+        <div class="card-header">
+            <div class="float-right mt-n1">  
+                @HeaderRight
+            </div>
+
+            <h5 class="pt-0">@Title</h5>
+        </div>
+
+        <div class="card-body">
+               @ChildContent  
+        </div>
+    </div>
+    
+
+@code {
+        [Parameter]
+        public string Title { get; set; }
+
+        [Parameter]
+        public RenderFragment HeaderRight { get; set; }
+
+        [Parameter]
+        public RenderFragment ChildContent { get; set; }
+}

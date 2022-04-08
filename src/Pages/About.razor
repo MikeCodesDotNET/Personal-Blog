@@ -1,0 +1,143 @@
+﻿@page "/about"
+
+<PageTitle>Mike Codes .NET - About</PageTitle>
+
+<div class="mt-5 container ">    
+
+    <section class="firstSection">
+
+        <h1 class="pageTitle">About me</h1>
+
+        <Animate Animation="Animations.FadeUp" Duration="TimeSpan.FromSeconds(1)" Delay="TimeSpan.Zero">
+            <div class="container">
+                <div class="row align-items-center justify-content-around">
+                    <div class="col-md-5 col-xl-6 mb-4 mb-md-0">
+                        <img src="/img/me_big.png" alt="Picture of me sat in front of my desk." class="rounded">
+                    </div>
+                    <div class="col-md-7 col-xl-6">
+                        <div class="row justify-content-center">
+                            <div class="col-xl-8 col-lg-10">
+                                <span class="badge badge-primary">My Mission</span>
+                                <div class="my-3">
+                                    <div>
+                                        <span class="h2">I'm all about </span>
+                                        <AnimatedText TextValues="@(new string[] {"advocacy.","mentoring.","coding.","teaching.", "learning."})" />
+                                    </div>
+                                </div>
+                                <p class="lead text-left">
+                                    My job is to advocate for developers best interests and work to improve their chances of success. I seek out projects, developer communities and OSS developers where my assistance can accelerate impact and assist them in reaching their goals.
+                                </p>
+                                <p class="lead mb-0 text-left">
+                                    I consider advocacy to be a long-term investment, which demands forming authentic relationships with communities. The trust built through long-term collaboration affords the potential to advocate both for the community and to it.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Animate>
+    </section>
+
+    <section class="o-hidden">
+        <div class="container">
+            <div class="row mb-4 mt-4">
+                <div class="col">
+                    <h2>My Career</h2>
+                </div>
+            </div>
+            <div class="row o-hidden o-lg-visible">
+                <div class="col d-flex flex-column align-items-center">
+                    <ol class="process-vertical">
+                        <li data-aos="fade-left">
+                            <div class="process-circle bg-primary"></div>
+                            <div>
+                                <span class="text-small text-muted text-left">July 2010</span>
+                                <h5 class="mb-0">Development Support Technician</h5>
+                                <a href="https://www.pharoscontrols.com/" class="mb-0">Pharos Architectural Controls</a>
+                            </div>
+                        </li>
+                        <li data-aos="fade-right">
+                            <div class="process-circle bg-primary"></div>
+                            <div>
+                                <span class="text-small text-muted">March 2013</span>
+                                <h5 class="mb-0">Customer Support Engineer</h5>
+                                <a href="https://www.xamarin.com/" class="mb-0">Xamarin</a>
+                            </div>
+                        </li>
+                        <li data-aos="fade-left">
+                            <div class="process-circle bg-primary"></div>
+                            <div>
+                                <span class="text-small text-muted text-left">July 2014</span>
+                                <h5 class="mb-0">Developer Evangelist</h5>
+                                <a href="https://www.xamarin.com/" class="mb-0">Xamarin</a>
+                            </div>
+                        </li>
+                        <li data-aos="fade-right">
+                            <div class="process-circle bg-primary"></div>
+                            <div>
+                                <span class="text-small text-muted">February 2016</span>
+                                <h5 class="mb-0">Program Manager II</h5>
+                                <a href="https://developer.microsoft.com/en-gb/" class="mb-0">Microsoft - Developer Division</a>
+                            </div>
+                        </li>
+                        <li data-aos="fade-left">
+                            <div class="process-circle bg-primary"></div>
+                            <div>
+                                <span class="text-small text-muted text-left">January 2017</span>
+                                <h5 class="mb-0">Technical Solutions Professional</h5>
+                                <a href="https://www.microsoft.com/" class="mb-0">Microsoft - EMEA</a>
+                            </div>
+                        </li>
+                        <li data-aos="fade-right">
+                            <div class="process-circle bg-primary"></div>
+                            <div>
+                                <span class="text-small text-muted">September 2018</span>
+                                <h5 class="mb-0">Senior Developer Advocate</h5>
+                                <a href="https://developer.microsoft.com/en-gb/advocates/" class="mb-0">Microsoft - Cloud Advocacy</a>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container">
+            <div class="row align-items-center justify-content-around">
+                <div class="col-md-6 col-xl-5 mb-3 mb-md-0">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-10 col-lg-11">
+                            <h3 class="display-4">Want to hear about .NET?</h3>
+                            <p class="lead">I'm always thrilled to speak with developer communities and welcome invitations from user-groups, conferences, podcasts, etc...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 col-lg-6 mb-3 mb-md-0">
+                    <div class="image-collage">
+                        @*<a href="/img/events/IMG_0440.jpg" data-fancybox="Collage Gallery" class="d-none d-lg-block">
+                            <div data-jarallax-element="0 12" style="position: relative; z-index: 0; transform: translate3d(3.58609px, 0px, 0px);">
+                                <img src="/img/events/IMG_0440.jpg" alt="Image" class="rounded aos-init aos-animate" data-aos="fade-right">
+                                <div id="jarallax-container-2" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; z-index: -100;"><div style="pointer-events: none; transform-style: preserve-3d; backface-visibility: hidden; will-change: transform, opacity; position: absolute;"></div></div>
+                            </div>
+                        </a>
+
+                        <a href="/img/events/IMG_0434.jpg" data-fancybox="Collage Gallery">
+                            <div>
+                                <img src="/img/events/IMG_0434.jpg" alt="Image" class="rounded aos-init aos-animate" data-aos="fade-up">
+                            </div>
+                        </a>*@
+
+                        <a href="/img/events/IMG_0439.jpg" data-fancybox="Collage Gallery" class="d-none d-lg-block mb-4 mt-4">
+                            <div data-jarallax-element="0 -12" style="position: relative; z-index: 0; transform: translate3d(5.63826px, 0px, 0px);">
+                                <img src="/img/events/IMG_0439.jpg" alt="Image" class="rounded aos-init aos-animate" data-aos="fade-left">
+                                <div id="jarallax-container-3" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; overflow: hidden; z-index: -100;"><div style="pointer-events: none; transform-style: preserve-3d; backface-visibility: hidden; will-change: transform, opacity; position: absolute;"></div></div>
+                            </div>
+                        </a>                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>

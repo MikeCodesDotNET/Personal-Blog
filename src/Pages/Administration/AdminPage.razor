@@ -1,0 +1,82 @@
+﻿@page "/admin"
+
+@inject AuthenticationStateProvider AuthState
+@attribute [Authorize]
+
+<SideTabControl>
+    <TabPage Text="Overview">
+        <ProfileDetailsCard Username="@Username" Email="@Email" Picture="@Picture"></ProfileDetailsCard>
+        <div class="row mt-4">
+    
+            <AdminIconCard Title="Drafts" SubTitle="" IconAltText="Drafts" Icon="img/icons/bg-drafts.svg">
+                <ul class="list-unstyled">
+                    <li><a href="/">A link.</a></li>
+                    <li><a href="/">Another Link</a></li>
+                </ul>
+            </AdminIconCard>
+
+   
+            <AdminIconCard Title="Comments" SubTitle="" IconAltText="Comments" Icon="img/icons/bg-comments.svg">
+                <ul class="list-unstyled">
+                    <li><a href="/">A link.</a></li>
+                    <li><a href="/">Another Link</a></li>
+                </ul>
+            </AdminIconCard>
+    
+            <AdminIconCard Title="Images" SubTitle="" IconAltText="Images" Icon="img/icons/bg-images.svg">
+                <ul class="list-unstyled">
+                    <li><a href="/">A link.</a></li>
+                    <li><a href="/">Another Link</a></li>
+                </ul>
+            </AdminIconCard>
+    
+
+        </div>
+    </TabPage>
+    
+    <TabPage Text="Content">
+        <BlogPostsManagement/>
+    </TabPage>
+    
+    <TabPage Text="Images">
+        <h1>Todo</h1>
+    </TabPage>
+    
+    <TabPage Text="Links">
+        <h1>Todo</h1>
+    </TabPage>
+    
+    <TabPage Text="Stats">
+        <h1>Todo</h1>
+    </TabPage>
+</SideTabControl>
+
+
+
+@code { 
+    private string Username = "Anonymous User";
+    private string Picture = "";
+    private string Email = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var state = await AuthState.GetAuthenticationStateAsync();
+
+        Username = state.User.Claims
+            .Where(c => c.Type.Equals("name"))
+            .Select(c => c.Value)
+            .FirstOrDefault() ?? string.Empty;
+
+        Email = state.User.Claims
+            .Where(c => c.Type.Equals("email"))
+            .Select(c => c.Value)
+            .FirstOrDefault() ?? string.Empty;
+
+        Picture = state.User.Claims
+            .Where(c => c.Type.Equals("picture"))
+            .Select(c => c.Value)
+            .FirstOrDefault() ?? string.Empty;
+
+        await base.OnInitializedAsync();
+    }
+}

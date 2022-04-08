@@ -1,0 +1,225 @@
+﻿@namespace MikeCodesDotNET.Components
+
+@using System.Text.RegularExpressions
+@using System.IO
+
+@using Markdig
+@using Markdig.Renderers
+
+@using MikeCodesDotNET.Models
+@using MikeCodesDotNET.Utilities
+
+@inject IJSRuntime _jsRuntime
+
+<section class="p-0 pb-5">
+    <div>
+        <div class="row justify-content-center position-relative">
+            <div class="col-lg-10 col-xl-8">
+                <img src="@BlogPost.MarkdownContent.HeaderBackgroundImage.Url.ToString()" alt="Image" class="rounded">
+            </div>
+        </div>
+        <div class="row mt-3" style="display: block;">
+            <article>
+                <style>
+
+                    h1 {
+                        line-height: unset;
+                        margin-bottom: 1.5rem;
+                        font-size: 2.8rem;
+                        font-weight: 600;
+                        padding-top: 1.7rem;
+                        padding-bottom: .5rem;
+                    }
+
+
+                    h2 {
+                        line-height: unset;
+                        margin-bottom: 1rem;
+                        font-size: 1.85rem;
+                        font-weight: 600;
+                        padding-top: 1.7rem;
+                        padding-bottom: .5rem;
+                    }
+
+
+                    h3 {
+                        line-height: 1.2rem;
+                        margin-bottom: 1rem;
+                        font-size: 1.75rem;
+                        font-weight: 600;
+                        padding-top: 1.7rem;
+                        padding-bottom: .5rem;
+                    }
+
+                    h4 {
+                        line-height: 1.2rem;
+                        margin-bottom: 1rem;
+                        font-size: 1.45rem;
+                        font-weight: 600;
+                        padding-top: 1.7rem;
+                        padding-bottom: .5rem;
+                    }
+
+                    h5 {
+                        line-height: 1.375rem;
+                        margin-bottom: 0.75rem;
+                        font-size: 1.25rem;
+                        font-weight: 600;
+                        padding-top: 1.7rem;
+                        padding-bottom: .5rem;
+                    }
+
+                    h6 {
+                        line-height: 1.2;
+                        margin-bottom: 1rem;
+                        font-size: 1rem;
+                        font-weight: 600;
+                    }
+
+                    /* vs2015 theme specific*/
+/*                    pre {
+                        padding: 0.2em !important;
+                        overflow-x: auto;
+                        white-space: pre;
+                        word-break: normal;
+                        word-wrap: normal;
+                        border-radius: 0.625rem;
+                        background-clip: border-box;
+                    }*/
+
+                    pre > code {
+                        white-space: pre-wrap;
+                        border-radius: 0.425rem;
+                    }
+
+
+
+                    img {
+                        border-radius: 0.3125rem !important;
+                        display: block;
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+
+         /*           code {
+                        border-radius: 0.425rem;
+                        padding: .75em .75em 0 .75em !important;
+                        background-clip: border-box;
+                    }   */
+                    
+           
+                    .roundedTop {
+                        border-radius: 0.825rem 0.825rem 0px 0px;
+                        background-clip: border-box;
+                        border-left: 1px solid ;
+                        border-top: 1px solid ;
+                        border-right: 1px solid ;
+                        border-color: #535BFE;
+                        margin-right: 12px;
+                        margin-left: 12px;
+                    }     
+                    
+                    .borderedMiddle {
+                        border-left: 1px solid ;
+                        border-right: 1px solid ;
+                        border-color: #535BFE;
+                        margin-right: 12px;
+                        margin-left: 12px;
+                    }
+
+                    .roundedBottom {
+                        border-radius:  0px 0px 0.825rem 0.825rem;
+                        background-clip: border-box;
+                        border-left: 1px solid ;
+                        border-bottom: 1px solid ;
+                        border-right: 1px solid ;
+                        border-color: #535BFE;
+                        margin-right: 12px;
+                        margin-left: 12px;
+                        padding-bottom: 1.5rem;
+                    }      
+                </style>
+
+
+                @if (sections?.Any() == true)
+                {
+                    for (int i = 0; i < sections.Count(); i++)
+                    {
+                       <div class="@GetSectionClass(i)">
+                                <div class="container-fluid pb-1 pt-2">
+                                    <div class="mx-7">
+                                        @((MarkupString)@sections[i])
+                                    </div>
+                                </div>
+                            <div class="divider"></div>
+                       </div>
+                    }
+                }
+       
+            </article>
+        </div>
+    </div>
+</section>
+
+@code {
+
+    [Parameter]
+    public BlogPost BlogPost { get; set; }
+
+    private IReadOnlyList<string> sections;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        if(BlogPost.MarkdownContent != null)
+            sections = BlogPost.MarkdownContent.ToHtmlSections();
+    }
+
+    string GetSectionClass(int sectionIndex)
+    {        
+        if (sections == null || !sections.Any())
+            return string.Empty;
+
+        var result = string.Empty;
+
+        if(sections.Count() == 1 && sectionIndex == 0)
+        {
+            //Just a single section
+            return "has-divider bg-primary-3 mb-0 roundedTop roundedBottom";
+        }
+        else if(sectionIndex == 0)
+        {
+            //First Section
+            return "has-divider bg-primary-3 mb-0 roundedTop";
+        }       
+        else if(sectionIndex % 2 == 0)
+        {
+            //Even Section (middle)
+            result = "has-divider bg-primary-3 mb-0 borderedMiddle";
+        }
+        else
+        {
+            //Odd Section (middle)
+            result = "has-divider bg-primary-2 mb-0 borderedMiddle";
+        }
+
+        if(sectionIndex == sections.Count() - 1)
+        {
+            //Last Section 
+            result = $"{result} roundedBottom";
+        }
+
+        return result;
+    }
+
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        await _jsRuntime.InvokeVoidAsync("hljs.highlightAll");
+    }
+}

@@ -1,0 +1,78 @@
+﻿@using MikeCodesDotNET.Models.Account
+@using Microsoft.AspNetCore.Components
+
+@inject IAlertService AlertService
+@inject NavigationManager NavigationManager
+
+<section class="min-vh-100 py-5">
+    <div class="container">
+        <div class="row justify-content-center mb-md-6 mt-6">
+            <div class="col-auto">
+                <h1 class="display-6" mt-3>MikeCodes.NET</h1>
+            </div>
+        </div>
+        <div class="row justify-content-center pt-5">
+            <div class="col-xl-4 col-lg-5 col-md-6">
+                <div class="mb-2">
+                    <h3>Sign Up</h3>
+                </div>
+                <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <InputText @bind-Value="model.FirstName" class="form-control" />
+                        <ValidationMessage For="@(() => model.FirstName)" />
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <InputText @bind-Value="model.LastName" class="form-control" />
+                        <ValidationMessage For="@(() => model.LastName)" />
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <InputText @bind-Value="model.Username" class="form-control" />
+                        <ValidationMessage For="@(() => model.Username)" />
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <InputText @bind-Value="model.Password" type="password" class="form-control" />
+                        <ValidationMessage For="@(() => model.Password)" />
+                    </div>
+                    <button disabled="@loading" class="btn btn-primary">
+                        @if (loading) 
+                        {
+                            <span class="spinner-border spinner-border-sm mr-1"></span>
+                        }
+                        Register
+                    </button>
+                    <NavLink href="account/login" class="btn btn-link">Cancel</NavLink>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private AddUser model = new AddUser();
+    private bool loading;
+
+    private async void OnValidSubmit()
+    {
+    // reset alerts on submit
+        AlertService.Clear();
+        
+        loading = true;
+        try
+        {
+            await AccountService.Register(model);
+            AlertService.Success("Registration successful", keepAfterRouteChange: true);
+            NavigationManager.NavigateTo("/admin");
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

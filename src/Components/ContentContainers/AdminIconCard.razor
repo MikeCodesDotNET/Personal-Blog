@@ -1,0 +1,35 @@
+﻿@namespace MikeCodesDotNET.Components
+
+
+<div class="col-md-6 col-xl-4">
+    <div class="card admin-card mb-4 bg-admin text-light">
+        <div class="card-header">
+            <img class="float-left mb-2" src="@Icon" alt="@IconAltText">
+            <h5 class="mt-0 pt-0 pl-5 mb-0 pb-0">@Title</h5>
+            <p class="pl-5 text-muted">@SubTitle</p>
+        </div>
+        <div class="card-body text-light">
+            @ChildContent
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string IconAltText { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public  string SubTitle { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+}

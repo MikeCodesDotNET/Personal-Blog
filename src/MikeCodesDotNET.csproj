@@ -1,0 +1,71 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <UserSecretsId>aspnet-MikeCodesDotNET-B070A888-919A-4777-A2C3-4F73F7BE81C3</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Components\Auth\**" />
+    <Compile Remove="wwwroot\theme\**" />
+    <Content Remove="Components\Auth\**" />
+    <Content Remove="wwwroot\theme\**" />
+    <EmbeddedResource Remove="Components\Auth\**" />
+    <EmbeddedResource Remove="wwwroot\theme\**" />
+    <None Remove="Components\Auth\**" />
+    <None Remove="wwwroot\theme\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Pages\_ViewStart.cshtml" />
+  </ItemGroup>
+
+    <ItemGroup>
+	    <Script Include="**" />
+	    <Script Remove="**.d.ts" />
+	    <Script Remove="wwwroot\theme\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Script Remove="Models\Result.cs" />
+      <Script Remove="Pages\Administration\BlogPostsManagement.razor" />
+      <Script Remove="Services\AzureSearchService.cs" />
+      <Script Remove="Services\Blog\BlogPostSearchService.cs" />
+    </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Azure.AI.TextAnalytics" Version="5.2.0-beta.2" />
+    <PackageReference Include="Azure.Search.Documents" Version="11.4.0-beta.7" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.9.1" />
+    <PackageReference Include="Blazor.ContextMenu" Version="1.10.0" />
+    <PackageReference Include="BlazorAnimate" Version="3.0.0" />
+    <PackageReference Include="Blazored.Modal" Version="6.0.1" />
+    <PackageReference Include="Flurl" Version="3.0.4" />
+    <PackageReference Include="Humanizer" Version="2.14.1" />
+    <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />
+    <PackageReference Include="Lucene.Net.Analysis.Common" Version="4.8.0-beta00016" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="5.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.3" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.3" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.3" />
+
+	<PackageReference Include="Markdig" Version="0.26.0" />
+	<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+	<PackageReference Include="PSC.Blazor.Components.MarkdownEditor" Version="2.0.9" />
+	<PackageReference Include="Tewr.Blazor.FileReader" Version="3.2.0.21211" />
+	<PackageReference Include="WebStoating.Markdig.Prism" Version="1.0.0" />
+	<PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.3.6" />
+	<PackageReference Include="YamlDotNet" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="compilerconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\img\events\" />
+  </ItemGroup>
+
+</Project>

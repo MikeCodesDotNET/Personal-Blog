@@ -1,0 +1,80 @@
+﻿@implements IDisposable
+
+<span class="h2">@currentText</span>
+
+@code {
+
+
+    [Parameter]
+    public int Speed { get; set; } = 150;
+
+    [Parameter]
+    public int Delay { get; set; } = 2000;
+
+    [Parameter]
+    public string[] TextValues { get; set; }
+
+    List<string> values;
+
+    System.Threading.Timer timer;
+
+    string currentText;
+    string currentTarget;
+
+    protected override void OnInitialized()
+    {
+        values = new List<string>(TextValues);
+
+        var timer = new System.Threading.Timer((_) =>
+        {
+            InvokeAsync(async () =>
+            {
+               SetNextWordIfNeeded();
+
+               foreach (var c in currentTarget.ToCharArray())
+               {
+                   currentText = $"{currentText}{c}";
+                   StateHasChanged();
+                   await Task.Delay(Speed);
+               }
+
+               await Task.Delay(Delay);
+           });
+        }, null, 0, 2000);
+    }
+
+
+    IEnumerable<char> StringToChars(string input)
+    {
+	    var chars = input.ToCharArray();
+	
+	    for (int i = 0; i < chars.Length; i++)
+	    {
+		    var c = chars[i];
+		    yield return c;
+	    }
+    }
+
+    //Select next word and reset current text if complete.
+    void SetNextWordIfNeeded()
+    {
+        if(currentText == currentTarget)
+        {
+            if (currentTarget == TextValues.LastOrDefault())
+                currentTarget = TextValues.FirstOrDefault();
+            else 
+            {
+                var previousIndex = values.IndexOf(currentTarget);
+                previousIndex++;
+                currentTarget = TextValues.ElementAt(previousIndex);
+            }
+            currentText = string.Empty;
+        }
+    }
+
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}
